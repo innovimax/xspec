@@ -42,24 +42,26 @@ public class XSLTCoverageTraceListener implements TraceListener {
   /**
   * Method called at the start of execution, that is, when the run-time transformation starts
   */
-
+  @Override
   public void open(Controller c) {
-    out.println("<trace>");
+    this.out.println("<trace>");
 	System.out.println("controller="+c);
   }
 
   /**  
   * Method that implements the output destination for SaxonEE/PE 9.7
   */
+  @Override
   public void setOutputDestination(Logger logger) {
+	    // Do nothing
   }
 
   /**
   * Method called at the end of execution, that is, when the run-time execution ends
   */
-
+  @Override
   public void close() {
-    out.println("</trace>");
+    this.out.println("</trace>");
   }
 
   /**
@@ -68,31 +70,31 @@ public class XSLTCoverageTraceListener implements TraceListener {
    * executed, and about the context in which it is executed. This object is mutable,
    * so if information from the InstructionInfo is to be retained, it must be copied.
    */
-
+  @Override
   public void enter(InstructionInfo info, XPathContext context) {
     int lineNumber = info.getLineNumber();
     String systemId = info.getSystemId();
     int constructType = info.getConstructType();
-    if (utilsStylesheet == null &&
+    if (this.utilsStylesheet == null &&
         systemId.indexOf("generate-tests-utils.xsl") != -1) {
-      utilsStylesheet = systemId;
-      out.println("<u u=\"" + systemId + "\" />");
-    } else if (xspecStylesheet == null && 
+      this.utilsStylesheet = systemId;
+      this.out.println("<u u=\"" + systemId + "\" />");
+    } else if (this.xspecStylesheet == null && 
                systemId.indexOf("/xspec/") != -1) {
-      xspecStylesheet = systemId;
-      out.println("<x u=\"" + systemId + "\" />");
+      this.xspecStylesheet = systemId;
+      this.out.println("<x u=\"" + systemId + "\" />");
     } 
-    if (systemId != xspecStylesheet && systemId != utilsStylesheet) {
+    if (systemId != this.xspecStylesheet && systemId != this.utilsStylesheet) {
       Integer module;
-      if (modules.containsKey(systemId)) {
-        module = (Integer)modules.get(systemId);
+      if (this.modules.containsKey(systemId)) {
+        module = this.modules.get(systemId);
       } else {
-        module = new Integer(moduleCount);
-        moduleCount += 1;
-        modules.put(systemId, module);
-        out.println("<m id=\"" + module + "\" u=\"" + systemId + "\" />"); 
+        module = new Integer(this.moduleCount);
+        this.moduleCount += 1;
+        this.modules.put(systemId, module);
+        this.out.println("<m id=\"" + module + "\" u=\"" + systemId + "\" />"); 
       }
-      if (!constructs.contains(constructType)) {
+      if (!this.constructs.contains(constructType)) {
         String construct;
         if (constructType < 1024) {
           construct = StandardNames.getClarkName(constructType);
@@ -135,10 +137,10 @@ public class XSLTCoverageTraceListener implements TraceListener {
               construct = "Other";
           }
         }
-        constructs.add(constructType);
-        out.println("<c id=\"" + constructType + "\" n=\"" + construct + "\" />"); 
+        this.constructs.add(constructType);
+        this.out.println("<c id=\"" + constructType + "\" n=\"" + construct + "\" />"); 
       }
-      out.println("<h l=\"" + lineNumber + "\" m=\"" + module + "\" c=\"" + constructType + "\" />");
+      this.out.println("<h l=\"" + lineNumber + "\" m=\"" + module + "\" c=\"" + constructType + "\" />");
     }
   }
 
@@ -150,7 +152,7 @@ public class XSLTCoverageTraceListener implements TraceListener {
    * line number of the instruction is that of the start tag in the source stylesheet,
    * not the line number of the end tag.
    */
-
+  @Override
   public void leave(InstructionInfo instruction) {
     // Do nothing
   }
@@ -163,7 +165,7 @@ public class XSLTCoverageTraceListener implements TraceListener {
    * @param currentItem the new current item. Item objects are not mutable; it is safe to retain
    * a reference to the Item for later use.
    */
-
+  @Override
   public void startCurrentItem(Item currentItem) {
     // Do nothing
   }
@@ -177,7 +179,7 @@ public class XSLTCoverageTraceListener implements TraceListener {
    * the same underlying item as the corresponding startCurrentItem() call, though it will
    * not necessarily be the same actual object.
    */
-
+  @Override
   public void endCurrentItem(Item currentItem) {
     // Do nothing
   }
